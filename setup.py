@@ -16,9 +16,9 @@ def read_requires(path=None):
 
 setup(**{
     'name': 'uspech',
-    'version': '0.1.0',
+    'version': '0.1.2',
     'author': 'Singularita s.r.o.',
-    'description': 'Our common project utilities',
+    'description': 'Common project utilities (not for general use)',
     'license': 'MIT',
     'keywords': 'utilities',
     'url': 'http://github.com/singularita/uspech/',
