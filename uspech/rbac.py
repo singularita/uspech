@@ -1,6 +1,14 @@
 #!/usr/bin/python3 -tt
 # -*- coding: utf-8 -*-
 
+"""
+Role-Based Access Control
+=========================
+
+Tools to resolve roles to privileges using a static mapping of patterns.
+"""
+
+
 from fnmatch import fnmatch
 
 import re

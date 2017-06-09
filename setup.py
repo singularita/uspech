@@ -2,10 +2,16 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup, find_packages
-from os.path import *
+from sphinx.setup_command import BuildDoc
+
+
+name = 'uspech'
+version = '0.1.2'
 
 
 def read_requires(path=None):
+    from os.path import dirname, join
+
     if path is None:
         path = join(dirname(__file__), 'requirements.txt')
         print(path)
@@ -15,8 +21,8 @@ def read_requires(path=None):
 
 
 setup(**{
-    'name': 'uspech',
-    'version': '0.1.2',
+    'name': name,
+    'version': version,
     'author': 'Singularita s.r.o.',
     'description': 'Common project utilities (not for general use)',
     'license': 'MIT',
@@ -34,6 +40,16 @@ setup(**{
         'Intended Audience :: Developers',
     ],
     'install_requires': read_requires(),
+    'cmdclass': {
+        'build_sphinx': BuildDoc,
+    },
+    'command_options': {
+        'build_sphinx': {
+            'project': ('setup.py', name),
+            'version': ('setup.py', version),
+            'release': ('setup.py', version),
+        },
+    },
 })
 
 

@@ -1,6 +1,46 @@
 #!/usr/bin/python3 -tt
 # -*- coding: utf-8 -*-
 
+"""
+Logging
+=======
+
+If you write a library module, instead of using the `logging`` library
+directly, use the following approach that will create a module-specific
+logger with a dummy handler.
+
+.. code-block:: python
+
+    from uspech.log import make_logger
+
+    log = make_logger('dice')
+    log.debug('Preparing to roll dice...')
+
+If you want to output logging messages from you CLI program and do not
+want to bother with inventing a module name, you can use the module-level
+functions directly. They will send you messages to the root logger.
+
+.. code-block:: python
+
+    from uspech import log
+
+    log.debug('Who knowns where this is coming from?')
+
+Since the recommended way of running our applications is using the ``systemd``
+to take care of all daemonization aspects and ``journald`` to take care of
+logging, there is a shortcut to direct all logs to console.
+
+An environmental variable ``LOGLEVEL`` can be used to adjust the level if
+you do not specify it here.
+
+.. code-block:: python
+
+    from uspech.log import log_to_console, DEBUG
+
+    log_to_console(level=DEBUG)
+"""
+
+
 import logging
 
 from logging import debug, info, warning, error, critical, exception
@@ -20,7 +60,6 @@ def make_logger(name):
     Create new logger with a null handler.
 
     Useful shortcut for libraries that want to use their own logger.
-    For example:
 
     .. code-block:: python
 

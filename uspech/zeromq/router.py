@@ -1,6 +1,45 @@
 #!/usr/bin/python3 -tt
 # -*- coding: utf-8 -*-
 
+"""
+Router Sockets
+==============
+
+Simple router for situations when you want to know where messages came from
+and where do you want to send them. This should cover most of your IPC needs.
+
+.. code-block:: python
+    :caption: Usage example
+
+    from uspech.zeromq.router import Router
+
+    router = Router(default_recipient='example')
+    router.connect('tcp://peer.example.com:1234')
+
+    router.send({'question': 'How are you?'})
+
+    async for reply, sender in router:
+        print(sender, 'replied:', reply)
+        break
+
+.. note::
+
+    Remember that all messages may get lost and never rely on their
+    successfull delivery. Always include a timeout & retry mechanism.
+
+    The code in the example above is buggy as the peer might not be so
+    readily available, may fail to produce a reply or the reply might get
+    delayed and discarded.
+
+Router objects act as an asynchronous iterators producing 2-tuples of the
+received message and it's sender.
+
+All outbound messages are JSON encoded and timestamped. Received messages are
+JSON decoded and discarded when their timestamp indicates that they are more
+than 15 seconds old. Make sure that the peers have their clock synchronized.
+"""
+
+
 from json import loads, dumps
 from time import time
 from uuid import uuid4
@@ -21,16 +60,10 @@ class Router:
 
     def __init__(self, identity=None, default_recipient=None, loop=None):
         """
-        Prepares ZMQ socket.
-
         You can supply an identity to be able to bootstrap communication
         by sending messages to well-known participants.  Participants
         sending most messages to a single recipient can set it as default
-        as ommit it's name when calling the send method.
-
-        Every message contains a timestamp that is checked by recipient.
-        If the time difference is larger than 15 seconds, message is dropped.
-        Make sure your machines use NTP to synchronize their clocks.
+        and ommit it's name when calling the send method.
         """
 
         # Get an event loop to use.
@@ -99,7 +132,6 @@ class Router:
     async def __anext__(self):
         """
         Coroutine producing incoming messages.
-        To be used in the "async for" statement.
         """
 
         while True:
