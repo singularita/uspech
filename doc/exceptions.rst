@@ -1,0 +1,4 @@
+.. automodule:: uspech.exceptions
+
+   Members
+   -------

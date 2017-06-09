@@ -92,7 +92,6 @@ todo_include_todos = True
 autoclass_content = 'both'
 autodoc_default_flags = [
     'members',
-    'inherited-members',
     'show-inheritance',
 ]
 

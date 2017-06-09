@@ -8,5 +8,6 @@ Table of Contents
    :maxdepth: 1
 
    log
-   zeromq
+   exceptions
    rbac
+   zeromq
