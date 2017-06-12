@@ -14,7 +14,6 @@
    {% include "utility.html" %}
   </ul>
   <ul class="nav navbar-nav navbar-primary {{'persistent-secondary' if second_level_menu() else ''}}">
-   {% block navbar %}
    {% for item in first_level_menu() %}
    <li class="{{'active' if item.active_item else ''}}">
     <a href="{{item.url}}">{{_(item.text)}}</a>
@@ -29,7 +28,6 @@
     {% endif %}
    </li>
    {% endfor %}
-   {% endblock %}
   </ul>
  </div>
 </nav>
