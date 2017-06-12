@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title -%}
+{{error.status}}: {% trans %}Invalid Request{% endtrans %}
+{%- endblock %}
+
+{% block content %}
+<div class="container-fluid buffer-top-md">
+ <div class="row">
+  <div class="col-md-8 col-md-push-2">
+   <div class="blank-slate-pf">
+    <h2>500: {% trans %}Invalid Request{% endtrans %}</h2>
+
+    <p>
+     {% trans %}
+     The application was unable to accomodate your request.
+     {% endtrans %}
+    </p>
+
+    <h3>{% trans %}Reason{% endtrans %}</h3>
+    <p>{{error}}</p>
+
+    <h3>Additional data</h3>
+    <pre>{{error.data|pretty}}</pre>
+   </div>
+  </div>
+ </div>
+</div>
+{% endblock %}

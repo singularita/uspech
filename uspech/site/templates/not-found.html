@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title -%}
+404: {% trans %}Not Found{% endtrans %}
+{%- endblock %}
+
+{% block content %}
+<div class="container-fluid buffer-top-md">
+ <div class="row">
+  <div class="col-md-8 col-md-push-2">
+   <div class="blank-slate-pf">
+    <h2>404: {% trans %}Not Found{% endtrans %}</h2>
+
+    <p>
+     {% trans %}
+     Resource or dialog your are looking for is not there.
+     If you feel that this is an error, please contact the application
+     administrator.
+     {% endtrans %}
+
+     {% trans  %}
+     If you do, be sure to include full address of the page and precise
+     date and time of the incident.
+     {% endtrans %}
+    </p>
+   </div>
+  </div>
+ </div>
+</div>
+{% endblock %}
