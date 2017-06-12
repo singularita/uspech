@@ -33,7 +33,7 @@ Usage:
     def home():
         return render_template('home.html')
 
-.. admonition:: tip
+.. admonition:: TIP
 
     Make sure to call ``setup_base`` only after you have registered other
     blueprints. Otherwise you won't be able to override base templates.

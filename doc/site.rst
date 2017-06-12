@@ -9,3 +9,8 @@
 
       Members
       -------
+
+   .. automodule:: uspech.site.pagination
+
+      Members
+      -------

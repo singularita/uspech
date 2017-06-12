@@ -16,3 +16,12 @@
 .buffer-top-md {
 	padding-top: 20px;
 }
+
+.table-view-pf-pagination {
+	margin-top: -20px;
+}
+
+/* Workaround a probable bug in the PatternFly. */
+table > tbody > tr > td.table-view-pf-actions {
+	padding: 0px;
+}
