@@ -32,6 +32,11 @@ Usage:
     @register_menu(app, '.', _('Home'))
     def home():
         return render_template('home.html')
+
+.. admonition:: tip
+
+    Make sure to call ``setup_base`` only after you have registered other
+    blueprints. Otherwise you won't be able to override base templates.
 """
 
 

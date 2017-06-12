@@ -30,8 +30,8 @@ Example:
 
     app.config.from_envvar('DEMO_SETTINGS')
 
-    setup_base(app)
     db = setup_sqlsoup(app)
+    setup_base(app)
 
     @app.route('/')
     @register_menu(app, '.', _('Home'))

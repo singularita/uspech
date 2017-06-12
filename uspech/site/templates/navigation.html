@@ -1,0 +1,35 @@
+<nav class="navbar navbar-default navbar-pf" role="navigation">
+ <div class="navbar-header">
+  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+   <span class="sr-only">{% trans %}Toggle navigation{% endtrans %}</span>
+   <span class="icon-bar"></span>
+   <span class="icon-bar"></span>
+   <span class="icon-bar"></span>
+  </button>
+  {% include "brand.html" %}
+ </div>
+
+ <div id="navbar" class="collapse navbar-collapse">
+  <ul class="nav navbar-nav navbar-utility">
+   {% include "utility.html" %}
+  </ul>
+  <ul class="nav navbar-nav navbar-primary {{'persistent-secondary' if second_level_menu() else ''}}">
+   {% block navbar %}
+   {% for item in first_level_menu() %}
+   <li class="{{'active' if item.active_item else ''}}">
+    <a href="{{item.url}}">{{_(item.text)}}</a>
+    {% if item.children %}
+    <ul class="nav navbar-nav navbar-persistent">
+     {% for sub in second_level_menu() %}
+     <li class="{{'active' if sub.active else ''}}">
+      <a href="{{sub.url}}">{{_(sub.text)}}</a>
+     </li>
+     {% endfor %}
+    </ul>
+    {% endif %}
+   </li>
+   {% endfor %}
+   {% endblock %}
+  </ul>
+ </div>
+</nav>
