@@ -92,6 +92,23 @@ def second_level_menu():
     return []
 
 
+@base.app_template_filter('to_alert')
+def category_to_alert(category):
+    return {
+        'ok': 'alert-success',
+        'warning': 'alert-warning',
+        'error': 'alert-danger',
+    }[category]
+
+@base.app_template_filter('to_icon')
+def category_to_icon(category):
+    return {
+        'ok': 'pficon-ok',
+        'warning': 'pficon-warning-triangle-o',
+        'error': 'pficon-error-circle-o',
+    }[category]
+
+
 @base.app_errorhandler(InvalidUsage)
 def usage_error(exn):
     """
@@ -194,6 +211,12 @@ def setup_base(app):
 
     ``date``
         Format a datetime object using only the date portion.
+
+    ``to_alert``
+        Convert strings ``ok``, ``warning`` and ``error`` to alert classes.
+
+    ``to_icon``
+        Convert strings ``ok``, ``warning`` and ``error`` to icon names.
 
     .. rubric:: Exception Handlers
 
