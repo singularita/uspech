@@ -1,0 +1,64 @@
+{% macro render_field(field, with_label=true) -%}
+<div class="form-group {{'has-error' if field.errors else ''}}">
+
+ {% if field.type in ('BooleanField',) %}
+ <div class="form-check">
+  <label class="form-check-label">
+   {{field(class_='form-check-input')}} {{field.label}}
+  </label>
+ </div>
+
+ {% elif field.type in ('RadioField',) %}
+ <legend>{{field.label}}</legend>
+ {% for sub in field %}
+ <div class="form-check">
+  <label class="form-check-label">
+   {{sub(class_='form-check-input')}} {{sub.label}}
+  </label>
+ </div>
+ {% endfor %}
+
+ {% else %}
+ <label class="form-control-label" for="{{field.id}}">{{field.label}}</label>
+ {{field(class_='form-control')}}
+
+ {% endif %}
+
+ {% if field.errors %}
+ {% for error in field.errors %}
+ <p class="help-block">{{error}}</p>
+ {% endfor %}
+ {% endif %}
+
+</div>
+{%- endmacro %}
+
+{% macro render_form(form, with_labels=true) -%}
+<form x-class="form-horizontal" method="{{form.method}}" action="{{form.action}}" role="form">
+ {% for field in form %}
+ {% if field.type in ('HiddenField', 'CSRFTokenField') %}
+ {% for error in field.errors %}
+ <div class="alert alert-danger">
+  <span class="pficon pficon-error-circle-o"></span> {{error}}
+ </div>
+ {% endfor %}
+ {% endif %}
+ {% endfor %}
+
+ {{form.hidden_tag()}}
+
+ {% for field in form %}
+ {% if field.type not in ('HiddenField', 'CSRFTokenField', 'SubmitField') %}
+ {{render_field(field, with_label=with_labels)}}
+ {% endif %}
+ {% endfor %}
+
+  <div class="form-group">
+   {% for field in form %}
+   {% if field.type in ('SubmitField',) %}
+   {{field(class_='btn btn-primary')}}
+   {% endif %}
+   {% endfor %}
+  </div>
+</form>
+{%- endmacro %}
