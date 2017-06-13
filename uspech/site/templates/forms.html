@@ -48,15 +48,17 @@
  {{form.hidden_tag()}}
 
  {% for field in form %}
- {% if field.type not in ('HiddenField', 'CSRFTokenField', 'SubmitField') %}
+ {% if field.type not in ('HiddenField', 'CSRFTokenField', 'SubmitField', 'DeleteField') %}
  {{render_field(field, with_label=with_labels)}}
  {% endif %}
  {% endfor %}
 
   <div class="form-group">
    {% for field in form %}
-   {% if field.type in ('SubmitField',) %}
+   {% if field.type == 'SubmitField' %}
    {{field(class_='btn btn-primary')}}
+   {% elif field.type == 'DeleteField' %}
+   {{field(class_='btn btn-danger')}}
    {% endif %}
    {% endfor %}
   </div>
