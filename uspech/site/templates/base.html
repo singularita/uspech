@@ -10,7 +10,7 @@
  <body>
   {% include "navigation.html" %}
 
-  <div class="alerts-container">
+  <div class="container-fluid buffer-top-md">
    {% for category, message in get_flashed_messages(with_categories=true) %}
    <div class="alert {{category|to_alert}}" role="alert">
     <span class="pficon {{category|to_icon}}" aria-hidden="true"></span>
