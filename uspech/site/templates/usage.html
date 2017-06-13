@@ -20,8 +20,10 @@
     <h3>{% trans %}Reason{% endtrans %}</h3>
     <p>{{error}}</p>
 
+    {% if error.data %}
     <h3>{% trans %}Additional data{% endtrans %}</h3>
     <pre>{{error.data|pretty}}</pre>
+    {% endif %}
    </div>
   </div>
  </div>
