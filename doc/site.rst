@@ -14,3 +14,8 @@
 
       Members
       -------
+
+   .. automodule:: uspech.site.forms
+
+      Members
+      -------
