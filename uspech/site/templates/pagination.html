@@ -3,7 +3,8 @@
  <div class="form-group">
   <span>
    <span class="pagination-pf-items-current">{{page.items_first}}-{{page.items_last}}</span>
-   of <span class="pagination-pf-items-total">{{page.items_total}}</span>
+   {{_('of (items)')}}
+   <span class="pagination-pf-items-total">{{page.items_total}}</span>
   </span>
 
   <ul class="pagination pagination-pf-back">
@@ -22,7 +23,10 @@
 
   <label for="pageno" class="sr-only">{{_('Current Page')}}</label>
   <input class="pagination-pf-page" type="text" value="{{page.number}}" id="pageno"/>
-  <span>of <span class="pagination-pf-pages">{{page.last}}</span></span>
+  <span>
+   {{_('of (items)')}}
+   <span class="pagination-pf-pages">{{page.last}}</span>
+  </span>
 
   <ul class="pagination pagination-pf-forward">
    <li class="{{'disabled' if page.is_last() else ''}}">

@@ -115,8 +115,8 @@ class Form(metaclass=FormMeta):
             field = self.fields[name]
 
         except KeyError:
-            msg = _('There is no field called {!r}.')
-            self.errors.append(msg.format(name))
+            msg = _('There is no field called %(name)r.', name=name)
+            self.errors.append(msg)
             return
 
         try:
@@ -387,22 +387,16 @@ class Length(Validator):
 
         if message is None:
             if self.min is not None and self.max is not None:
-                message = _('Field length must be between {} and {}.') \
-                          .format(self.min, self.max)
+                message = _('Field length must be between %(min)i and %(max)i.', min=min, max=max)
             elif self.min is not None:
-                message = _('Field length may not be lower than {}.') \
-                          .format(self.min)
+                message = _('Field length may not be lower than %(min)i.', min=min)
             elif self.max is not None:
-                message = _('Field length must not exceed {}.') \
-                          .format(self.max)
+                message = _('Field length must not exceed %(max)i.', max=max)
             else:
                 # Won't ever raise this.
                 message = 'BUG'
 
         super().__init__(message)
-
-        self.min = min
-        self.max = max
 
     def __call__(self, field):
         if field.value:
