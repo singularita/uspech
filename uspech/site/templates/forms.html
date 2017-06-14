@@ -1,66 +1,84 @@
-{% macro render_field(field, with_label=true) -%}
-<div class="form-group {{'has-error' if field.errors else ''}}">
+{%- macro render_form_body(form) %}
+{% if form.label %}
+<h3>{{form.label}}</h3>
+{% endif %}
 
- {% if field.type in ('BooleanField',) %}
- <div class="form-check">
-  <label class="form-check-label">
-   {{field(class_='form-check-input')}} {{field.label}}
-  </label>
- </div>
+{% for error in form.errors %}
+<div class="alert alert-danger">
+ <span class="pficon pficon-error-circle-o"></span> {{error}}
+</div>
+{% endfor %}
 
- {% elif field.type in ('RadioField',) %}
- <legend>{{field.label}}</legend>
- {% for sub in field %}
- <div class="form-check">
-  <label class="form-check-label">
-   {{sub(class_='form-check-input')}} {{sub.label}}
-  </label>
- </div>
- {% endfor %}
-
- {% else %}
- <label class="form-control-label" for="{{field.id}}">{{field.label}}</label>
- {{field(class_='form-control')}}
-
- {% endif %}
-
- {% if field.errors %}
+{% for field in form.fields.values() %}
+<div class="form-group {{'has-error' if field.errors}}">
+ {{field.render()}}
  {% for error in field.errors %}
  <p class="help-block">{{error}}</p>
  {% endfor %}
- {% endif %}
-
 </div>
-{%- endmacro %}
+{% endfor %}
 
-{% macro render_form(form, with_labels=true) -%}
-<form x-class="form-horizontal" method="{{form.method}}" action="{{form.action}}" role="form">
- {% for field in form %}
- {% if field.type in ('HiddenField', 'CSRFTokenField') %}
- {% for error in field.errors %}
- <div class="alert alert-danger">
-  <span class="pficon pficon-error-circle-o"></span> {{error}}
- </div>
+{% if form.buttons %}
+<div class="form-group">
+ {% for button in form.buttons.values() %}
+ {{button.render()}}
  {% endfor %}
- {% endif %}
- {% endfor %}
+</div>
+{% endif %}
+{% endmacro -%}
 
- {{form.hidden_tag()}}
 
- {% for field in form %}
- {% if field.type not in ('HiddenField', 'CSRFTokenField', 'SubmitField', 'DeleteField') %}
- {{render_field(field, with_label=with_labels)}}
- {% endif %}
- {% endfor %}
-
-  <div class="form-group">
-   {% for field in form %}
-   {% if field.type == 'SubmitField' %}
-   {{field(class_='btn btn-primary')}}
-   {% elif field.type == 'DeleteField' %}
-   {{field(class_='btn btn-danger')}}
-   {% endif %}
-   {% endfor %}
-  </div>
+{%- macro render_form(form, class_='') %}
+<form enctype="multipart/form-data" class="{{class_}}" method="{{form.method}}" action="{{form.action}}" role="form">
+ {{render_form_body(form, **kwargs)}}
 </form>
-{%- endmacro %}
+{% endmacro -%}
+
+
+{%- macro render_sub_form(field) %}
+{{render_form_body(field.subform, **kwargs)}}
+{% endmacro -%}
+
+
+{% macro render_submit_button(button, class_='', disabled=false) %}
+{%- if kwargs %}{% endif -%}
+<button class="{{class_}} btn btn-primary" {% if disabled %}disabled{% endif %}  type="submit" name="{{button.id}}" id="{{button.id}}" value="{{button.value}}">{{button.label}}</button>
+{% endmacro -%}
+
+
+{% macro render_delete_button(button, class_='', disabled=false) %}
+{%- if kwargs %}{% endif -%}
+<button class="{{class_}} btn btn-danger" {% if disabled %}disabled{% endif %}  type="submit" name="{{button.id}}" id="{{button.id}}" value="{{button.value}}">{{button.label}}</button>
+{% endmacro -%}
+
+
+{% macro render_string_field(field, class_='', disabled=false) %}
+{%- if kwargs %}{% endif -%}
+<label class="{{class_}} form-control-label" for="{{field.id}}">{{field.label}}</label>
+<input class="{{class_}} form-control" {% if disabled %}disabled{% endif %} type="text" name="{{field.id}}" id="{{field.id}}" value="{{field.value}}"/>
+{% endmacro -%}
+
+
+{% macro render_select_field(field, class_='', disabled=false) %}
+{%- if kwargs %}{% endif -%}
+<label class="{{class_}} form-control-label" for="{{field.id}}">{{field.label}}</label>
+<select class="{{class_}} form-control" {% if disabled %}disabled{% endif %} name="{{field.id}}" id="{{field.id}}">
+ {% if not field.default %}
+ <option value="" {% if value == field.value %}selected{% endif %}></option>
+ {% endif %}
+ {% for value, label in field.choices.items() %}
+ <option value="{{value}}" {% if value == field.value %}selected{% endif %}>{{label}}</option>
+ {% endfor %}
+</select>
+{% endmacro -%}
+
+
+{% macro render_select_multiple_field(field, class_='', disabled=false) %}
+{%- if kwargs %}{% endif -%}
+<label class="{{class_}} form-control-label" for="{{field.id}}">{{field.label}}</label>
+<select class="{{class_}} form-control" multiple {% if disabled %}disabled{% endif %} name="{{field.id}}" id="{{field.id}}">
+ {% for value, label in field.choices.items() %}
+ <option value="{{value}}" {% if value in field.value %}selected{% endif %} >{{label}}</option>
+ {% endfor %}
+</select>
+{% endmacro -%}

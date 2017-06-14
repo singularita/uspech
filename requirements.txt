@@ -1,6 +1,5 @@
 Flask
 Flask-Babel
 Flask-Menu
-Flask-WTForms
 pyzmq
 SQLSoup
