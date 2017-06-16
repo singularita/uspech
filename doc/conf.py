@@ -95,6 +95,9 @@ autodoc_default_flags = [
     'show-inheritance',
 ]
 
+# Order all automatically documented members by their source ordering.
+autodoc_member_order = 'bysource'
+
 autosummary_generate = True
 
 # -- Options for HTML output ----------------------------------------------
