@@ -1,4 +1,1 @@
 .. automodule:: uspech.log
-
-   Members
-   -------

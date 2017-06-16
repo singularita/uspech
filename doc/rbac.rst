@@ -1,4 +1,1 @@
 .. automodule:: uspech.rbac
-
-   Members
-   -------

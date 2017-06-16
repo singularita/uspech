@@ -1,11 +1,11 @@
 Úspěch
 ======
 
-Table of Contents
------------------
+Modules
+-------
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 3
 
    log
    exceptions
