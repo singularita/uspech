@@ -108,11 +108,11 @@ class Form(metaclass=FormMeta):
         if not isinstance(values, list):
             values = [values]
 
-        if name in self.buttons:
-            return self.buttons[name].load(values)
-
         try:
-            field = self.fields[name]
+            if name in self.buttons:
+                elem = self.buttons[name]
+            else:
+                elem = self.fields[name]
 
         except KeyError:
             msg = _('There is no field called %(name)r.', name=name)
@@ -120,16 +120,17 @@ class Form(metaclass=FormMeta):
             return
 
         try:
-            if isinstance(field, MultipleField):
-                return field.load(values)
+            if isinstance(elem, MultipleField):
+                return elem.load(values)
 
             if len(values) > 0:
-                return field.load(values[0])
+                return elem.load(values[0])
 
-            return field.load(None)
+            return elem.load(None)
 
         except ValidationError as error:
-            field.errors.append(str(error))
+            if hasattr(elem, 'errors'):
+                elem.errors.append(str(error))
 
     def load(self, mapping):
         self.errors.clear()
@@ -255,14 +256,26 @@ class Field:
 class StringField(Field):
     macro = 'render_string_field'
 
+    def validate(self):
+        if not isinstance(self.value, str):
+            raise ValidationError(_('Expected a string.'))
+
+        self.value = self.value.strip()
+        super().validate()
+
 
 class MultipleField(Field):
     default = []
 
     def validate(self):
         if not isinstance(self.value, list):
-            msg = _('Expected list of values.')
-            raise ValidationError(msg)
+            raise ValidationError(_('Expected list of strings.'))
+
+        for item in self.value:
+            if not isinstance(item, str):
+                raise ValidationError(_('Not all options are strings.'))
+
+        self.value = [item.strip() for item in self.value]
 
         for value in self.value:
             if value not in self.choices:
