@@ -49,6 +49,7 @@ from flask_babel import Babel
 
 from bleach import clean
 from markdown import markdown
+from humanize import naturalsize
 from jinja2 import Markup
 
 from uspech.log import make_logger
@@ -86,6 +87,11 @@ def format_date(value):
 def render_markdown(value):
     if value is not None:
         return Markup(markdown(clean(value), output_format='html5'))
+
+
+@base.app_template_filter('naturalsize')
+def naturalsize_filter(*args, **kwargs):
+    return naturalsize(*args, **kwargs)
 
 
 @base.app_template_global('first_level_menu')
