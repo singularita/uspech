@@ -69,7 +69,7 @@
 {% macro render_numeric_field(field, class_='', disabled=false) %}
 {%- if kwargs %}{% endif -%}
 <label class="{{class_}} form-control-label" for="{{field.id}}">{{field.label}}</label>
-<input class="{{class_}} form-control" {% if disabled %}disabled{% endif %} type="number" {% if field.min != None %}min="{{field.min}}"{% endif %}  {% if field.max != None %}min="{{field.max}}"{% endif %}name="{{field.id}}" id="{{field.id}}" value="{{field.value}}"/>
+<input class="{{class_}} form-control" {% if disabled %}disabled{% endif %} type="number" step="any" {% if field.min != None %}min="{{field.min}}"{% endif %}  {% if field.max != None %}min="{{field.max}}"{% endif %}name="{{field.id}}" id="{{field.id}}" value="{{field.value}}"/>
 {% endmacro -%}
 
 
