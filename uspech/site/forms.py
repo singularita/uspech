@@ -637,6 +637,7 @@ class FormField(Field):
     subform = None
     field_options = {}
     button_options = {}
+    required = True
 
     def __init__(self, *args, **options):
         assert self.subform is not None, 'Member subform must be specified'
