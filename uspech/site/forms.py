@@ -137,7 +137,6 @@ class Form(metaclass=FormMeta):
 
             class q(StringField):
                 label = _('Query')
-                required = True
                 min_length = 1
                 max_length = 100
 
@@ -362,8 +361,7 @@ class Field:
         class UserForm(Form):
             class name(StringField):
                 label = _('Name')
-                required = True
-                min_length = 1
+                required = False
                 max_length = 100
 
                 def validate(self):
@@ -404,7 +402,7 @@ class Field:
     having the database column nullable.
     """
 
-    required = False
+    required = True
     """
     Controls whether is the field required to be filled in on submission.
     """
