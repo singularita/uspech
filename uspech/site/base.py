@@ -47,6 +47,10 @@ from flask import Blueprint, request, render_template, jsonify
 from flask_menu import Menu, current_menu
 from flask_babel import Babel
 
+from bleach import clean
+from markdown import markdown
+from jinja2 import Markup
+
 from uspech.log import make_logger
 from uspech.exceptions import InvalidUsage
 
@@ -76,6 +80,12 @@ def format_datetime(value):
 def format_date(value):
     if value is not None:
         return value.strftime('%Y-%m-%d')
+
+
+@base.app_template_filter('markdown')
+def render_markdown(value):
+    if value is not None:
+        return Markup(markdown(clean(value), output_format='html5'))
 
 
 @base.app_template_global('first_level_menu')

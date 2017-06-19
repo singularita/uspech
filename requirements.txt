@@ -1,5 +1,7 @@
+Bleach
 Flask
 Flask-Babel
 Flask-Menu
+Markdown
 pyzmq
 SQLSoup
