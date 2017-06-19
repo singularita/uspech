@@ -96,3 +96,10 @@
  {% endfor %}
 </select>
 {% endmacro -%}
+
+
+{% macro render_file_field(field, class_='', disabled=false) %}
+{%- if kwargs %}{% endif -%}
+<label class="{{class_}} form-control-label" for="{{field.id}}">{{field.label}}</label>
+<input class="{{class_}} form-control" {% if disabled %}disabled{% endif %} type="file" {% if field.accept %}accept=".{{',.'.join(field.accept)}}"{% endif %} name="{{field.id}}" id="{{field.id}}" value="{{field.value}}"/>
+{% endmacro -%}

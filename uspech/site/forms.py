@@ -61,6 +61,7 @@ from collections import Mapping, OrderedDict
 from werkzeug.datastructures import MultiDict
 
 from flask import get_template_attribute, request
+from werkzeug.utils import secure_filename
 from flask_babel import lazy_gettext as _
 
 
@@ -74,6 +75,7 @@ __all__ = [
     'SelectField',
     'SelectMultipleField',
     'FormField',
+    'FileField',
     'Button',
     'SubmitButton',
     'DeleteButton',
@@ -328,7 +330,11 @@ class Form(metaclass=FormMeta):
         if request.method == 'GET':
             return False
 
-        self.load(request.form)
+        payload = MultiDict()
+        payload.update(request.form)
+        payload.update(request.files)
+
+        self.load(payload)
         return self.is_valid()
 
     def render(self, *args, **kwargs):
@@ -656,6 +662,48 @@ class FormField(Field):
 
     def is_valid(self):
         return super().is_valid() and self.subform.is_valid()
+
+
+class FileField(Field):
+    macro = 'render_file_field'
+
+    accept = []
+    """
+    List of acceptable file name suffixes.
+    Anything is acceptable when this list is empty.
+    """
+
+    IMAGES = ['jpeg', 'jpg', 'png']
+    """
+    Frequently used image suffixes.
+    """
+
+    DOCUMENTS = [
+        'txt', 'csv', 'pdf', 'ps',
+        'odt', 'ods', 'odp',
+        'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx',
+    ]
+    """
+    Frequently used document suffixes.
+    """
+
+    def validate(self):
+        super().validate()
+
+        self.file = self.value
+        self.value = self.file.filename
+
+        if self.file.filename == '':
+            if self.required:
+                raise ValidationError(_('This field must be filled in.'))
+
+        self.value = secure_filename(self.file.filename)
+
+        if self.value.rsplit('.', 1)[1].lower() not in self.accept:
+            raise ValidationError(_('Unacceptable file type.'))
+
+    def save(self, path, *args, **kwargs):
+        return self.file.save(path, *args, **kwargs)
 
 
 class Button:
