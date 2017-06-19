@@ -21,7 +21,26 @@
 	margin-top: -20px;
 }
 
+h2:first-child,
+h3:first-child {
+	margin-top: 5px;
+}
+
+h2, h3 {
+	margin-bottom: 2px;
+}
+
+h2:last-child,
+h3:last-child {
+	margin-bottom: 10px;
+}
+
+table.table {
+	margin-top: 10px;
+}
+
 /* Workaround a probable bug in the PatternFly. */
-table > tbody > tr > td.table-view-pf-actions {
+table > tbody > tr > td.table-view-pf-actions,
+table > thead > tr > th.table-view-pf-actions {
 	padding: 0px;
 }

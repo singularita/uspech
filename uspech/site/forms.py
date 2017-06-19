@@ -6,7 +6,7 @@ HTML Forms
 ==========
 
 Module provides classes that can be used to model HTML forms along with
-server-side input validators. They are then rendered using macros from
+server-side input validations. They are then rendered using macros from
 Flask-sourced jinja2 templates.
 
 Example:
@@ -21,7 +21,9 @@ Example:
     class EditForm(Form):
         class Name(StringField):
             label = _('Clip Name')
-            validators = [Required(), Length(1, 100)]
+            required = True
+            min_length = 1
+            max_length = 100
 
         class format(SelectField):
             label = _('Clip Format')
@@ -51,6 +53,9 @@ Example:
         return render_template('clip/edit.html', clip=clip, form=form)
 """
 
+import re
+
+from decimal import Decimal
 from collections import Mapping, OrderedDict
 
 from werkzeug.datastructures import MultiDict
@@ -63,6 +68,8 @@ __all__ = [
     'Form',
     'Field',
     'StringField',
+    'TextField',
+    'NumericField',
     'MultipleField',
     'SelectField',
     'SelectMultipleField',
@@ -70,10 +77,6 @@ __all__ = [
     'Button',
     'SubmitButton',
     'DeleteButton',
-    'Validator',
-    'Required',
-    'Email',
-    'Length',
     'ValidationError',
 ]
 
@@ -87,6 +90,13 @@ class FormMeta(type):
         result = type.__new__(cls, name, bases, namespace, **kwds)
         result.field_types = OrderedDict()
         result.button_types = OrderedDict()
+
+        for base in bases:
+            if hasattr(base, 'field_types'):
+                result.field_types.update(base.field_types)
+
+            if hasattr(base, 'button_types'):
+                result.button_types.update(base.button_types)
 
         for name, Elem in list(namespace.items()):
             if isinstance(Elem, type) and issubclass(Elem, Field):
@@ -127,7 +137,9 @@ class Form(metaclass=FormMeta):
 
             class q(StringField):
                 label = _('Query')
-                validators = [Required(), Length(1, 100)]
+                required = True
+                min_length = 1
+                max_length = 100
 
             class ok(SubmitButton):
                 label = _('OK')
@@ -350,7 +362,9 @@ class Field:
         class UserForm(Form):
             class name(StringField):
                 label = _('Name')
-                validators = [Required(), Length(1, 100)]
+                required = True
+                min_length = 1
+                max_length = 100
 
                 def validate(self):
                     super().validate()
@@ -383,18 +397,16 @@ class Field:
     Label to render along the field.
     """
 
-    validators = []
-    """
-    List of callables that are used to check and possibly normalize the
-    field value. Called on the :class:`Field`. Try to use the pre-defined
-    :class:`Validator` child classes.
-    """
-
     nullable = False
     """
     Controls whether to dump ``None`` value when the field value is falsy.
     Affects the :func:`~Field.fill` method in a way that is compatible with
     having the database column nullable.
+    """
+
+    required = False
+    """
+    Controls whether is the field required to be filled in on submission.
     """
 
     def __init__(self, name, form, **options):
@@ -464,13 +476,12 @@ class Field:
 
     def validate(self):
         """
-        Run field validators and possibly some additional field-type-specific
-        checks. Feel free to override it, but do not forget to call the
-        original method as well.
+        Validate field and possibly clean up the value. Feel free to override
+        it, but do not forget to call the original method as well.
         """
 
-        for validate in self.validators:
-            validate(self)
+        if self.required and not self.value:
+            raise ValidationError(_('This field must be filled in.'))
 
     def render(self, *args, **kwargs):
         """
@@ -491,12 +502,77 @@ class StringField(Field):
 
     macro = 'render_string_field'
 
+    pattern = r'.*'
+    """
+    Input field validation regular expression pattern.
+    """
+
+    min_length = 0
+    max_length = None
+
     def validate(self):
+        super().validate()
+
         if not isinstance(self.value, str):
             raise ValidationError(_('Expected a string.'))
 
         self.value = self.value.strip()
+
+        if not re.match(self.pattern, self.value):
+            raise ValidationError(_('Invalid input format.'))
+
+        if len(self.value) < self.min_length:
+            msg = _('Input too short (< %(min)d).', min=self.min_length)
+            raise ValidationError(msg)
+
+        if self.max_length is not None:
+            if len(self.value) > self.max_length:
+                msg = _('Input too long (> %(max)d).', max=self.max_length)
+                raise ValidationError(msg)
+
+
+class TextField(Field):
+    """
+    Field that contains a long textual value.
+    """
+
+    macro = 'render_text_field'
+
+
+class NumericField(Field):
+    """
+    Field that contains a real numeric value.
+    """
+
+    macro = 'render_numeric_field'
+
+    min = None
+    """
+    Lower boundary on the value.
+    """
+
+    max = None
+    """
+    Upper boundary on the value.
+    """
+
+    def validate(self):
         super().validate()
+
+        try:
+            self.value = Decimal(self.value)
+        except ValueError:
+            raise ValidationError(_('Expected a numeric value.'))
+
+        if self.min is not None:
+            if self.value < self.min:
+                msg = _('Expected at least %(min)d.', min=self.min)
+                raise ValidationError(msg)
+
+        if self.max is not None:
+            if self.value > self.max:
+                msg = _('Expected at most %(max)d.', max=self.max)
+                raise ValidationError(msg)
 
 
 class SelectField(Field):
@@ -640,92 +716,6 @@ class DeleteButton(Button):
     """
 
     macro = 'render_delete_button'
-
-
-class Validator:
-    """
-    Parent class for all kinds of input validators.
-    """
-
-    def __init__(self, message):
-        """
-        :param message: Reason for failed validation intended for the user.
-        """
-
-        self.message = message
-
-    def __call__(self, field):
-        """
-        Perform validation.
-
-        :param field: Field to validate.
-        """
-
-
-class Required(Validator):
-    """
-    Require user to fill the field with anything.
-    """
-
-    def __init__(self, message=None):
-        if message is None:
-            message = _('Field must be filled in.')
-
-        self.message = message
-
-    def __call__(self, field):
-        if not field.value:
-            raise ValidationError(self.message)
-
-
-class Email(Validator):
-    """
-    Require that field contains the ``@`` character.
-    """
-
-    def __init__(self, message=None):
-        if message is None:
-            message = _('Invalid email address format.')
-
-        self.message = message
-
-    def __call__(self, field):
-        if field.value:
-            if '@' not in field.value:
-                raise ValidationError(self.message)
-
-
-class Length(Validator):
-    """
-    Require that field length is in the specified range.
-    """
-
-    def __init__(self, min=None, max=None, message=None):
-        self.min = min
-        self.max = max
-
-        if message is None:
-            if self.min is not None and self.max is not None:
-                message = _('Field length must be between %(min)i and %(max)i.', min=min, max=max)
-            elif self.min is not None:
-                message = _('Field length may not be lower than %(min)i.', min=min)
-            elif self.max is not None:
-                message = _('Field length must not exceed %(max)i.', max=max)
-            else:
-                # Won't ever raise this.
-                message = 'BUG'
-
-        super().__init__(message)
-
-    def __call__(self, field):
-        if field.value:
-            if self.min is not None:
-                if len(field.value) < self.min:
-                    raise ValidationError(self.message)
-
-            if self.max is not None:
-                if len(field.value) > self.max:
-                    raise ValidationError(self.message)
 
 
 class ValidationError(Exception):

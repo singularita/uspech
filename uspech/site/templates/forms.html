@@ -55,7 +55,21 @@
 {% macro render_string_field(field, class_='', disabled=false) %}
 {%- if kwargs %}{% endif -%}
 <label class="{{class_}} form-control-label" for="{{field.id}}">{{field.label}}</label>
-<input class="{{class_}} form-control" {% if disabled %}disabled{% endif %} type="text" name="{{field.id}}" id="{{field.id}}" value="{{field.value}}"/>
+<input class="{{class_}} form-control" {% if disabled %}disabled{% endif %} type="text" pattern="{{field.pattern}}" {% if field.max_length != None %}maxlength="{{field.max_length}}"{% endif %} name="{{field.id}}" id="{{field.id}}" value="{{field.value}}"/>
+{% endmacro -%}
+
+
+{% macro render_text_field(field, class_='', disabled=false) %}
+{%- if kwargs %}{% endif -%}
+<label class="{{class_}} form-control-label" for="{{field.id}}">{{field.label}}</label>
+<textarea class="{{class_}} form-control" {% if disabled %}disabled{% endif %} type="text" name="{{field.id}}" id="{{field.id}}">{{field.value}}</textarea>
+{% endmacro -%}
+
+
+{% macro render_numeric_field(field, class_='', disabled=false) %}
+{%- if kwargs %}{% endif -%}
+<label class="{{class_}} form-control-label" for="{{field.id}}">{{field.label}}</label>
+<input class="{{class_}} form-control" {% if disabled %}disabled{% endif %} type="number" {% if field.min != None %}min="{{field.min}}"{% endif %}  {% if field.max != None %}min="{{field.max}}"{% endif %}name="{{field.id}}" id="{{field.id}}" value="{{field.value}}"/>
 {% endmacro -%}
 
 
