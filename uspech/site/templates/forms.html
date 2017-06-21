@@ -1,8 +1,4 @@
 {%- macro render_form_body(form) %}
-{% if form.label %}
-<h3>{{form.label}}</h3>
-{% endif %}
-
 {% for error in form.errors %}
 <div class="alert alert-danger">
  <span class="pficon pficon-error-circle-o"></span> {{error}}
@@ -17,25 +13,43 @@
  {% endfor %}
 </div>
 {% endfor %}
-
-{% if form.buttons %}
-<div class="form-group">
- {% for button in form.buttons.values() %}
- {{button.render()}}
- {% endfor %}
-</div>
-{% endif %}
 {% endmacro -%}
 
 
 {%- macro render_form(form, class_='') %}
 <form enctype="multipart/form-data" class="{{class_}}" method="{{form.method}}" action="{{form.action}}" role="form">
- {{render_form_body(form, **kwargs)}}
+ <div class="panel panel-default">
+  {% if form.label %}
+  <div class="panel-heading">
+   <h2 class="panel-title">
+    {% if form.icon %}
+    <span class="{{form.icon}}"></span>
+    {% endif %}
+    {{form.label}}
+   </h2>
+  </div>
+  {% endif %}
+  <div class="panel-body">
+   {{render_form_body(form, **kwargs)}}
+  </div>
+
+  <div class="panel-footer">
+   <div class="pull-right">
+    {% for button in form.buttons.values() %}
+    {{button.render()}}
+    {% endfor %}
+   </div>
+   <div class="clearfix"></div>
+  </div>
+ </div>
 </form>
 {% endmacro -%}
 
 
 {%- macro render_sub_form(field) %}
+{% if form.label %}
+<h3>{{form.label}}</h3>
+{% endif %}
 {{render_form_body(field.subform, **kwargs)}}
 {% endmacro -%}
 
