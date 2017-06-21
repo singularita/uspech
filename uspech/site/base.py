@@ -44,6 +44,7 @@ from datetime import datetime
 from pprint import pformat
 
 from flask import Blueprint, request, render_template, jsonify
+from flask import current_app
 from flask_menu import Menu, current_menu
 from flask_babel import Babel
 
@@ -153,6 +154,13 @@ def system_error(exn):
     """
 
     log.exception(exn)
+
+    db = getattr(current_app, 'sqlsoup', None)
+    if db is not None:
+        try:
+            db.session.rollback()
+        except Exception as subexn:
+            log.exception(subexn)
 
     best = request.accept_mimetypes.best_match([
         'application/json',
