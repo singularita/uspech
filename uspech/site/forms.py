@@ -71,6 +71,7 @@ __all__ = [
     'StringField',
     'TextField',
     'NumericField',
+    'IntegerField',
     'MultipleField',
     'SelectField',
     'SelectMultipleField',
@@ -396,6 +397,11 @@ class Field:
     determine whether was the field filled at all. Best not to touch it.
     """
 
+    empty = ''
+    """
+    Value field must have in order to be considered empty.
+    """
+
     label = ''
     """
     Label to render along the field.
@@ -472,7 +478,7 @@ class Field:
         attribute.
         """
 
-        if not self.value:
+        if self.value == self.empty:
             if self.nullable:
                 return None
 
@@ -484,7 +490,7 @@ class Field:
         it, but do not forget to call the original method as well.
         """
 
-        if self.required and not self.value:
+        if self.required and self.value == self.empty:
             raise ValidationError(_('This field must be filled in.'))
 
     def render(self, *args, **kwargs):
@@ -579,6 +585,22 @@ class NumericField(Field):
                 raise ValidationError(msg)
 
 
+class IntegerField(NumericField):
+    """
+    Field that contains an integral numeric value.
+    """
+
+    macro = 'render_integer_field'
+
+    def validate(self):
+        super().validate()
+
+        try:
+            self.value = int(self.value)
+        except ValueError:
+            raise ValidationError(_('Expected an integral value.'))
+
+
 class SelectField(Field):
     """
     Field that allows user to select one of many choices.
@@ -598,6 +620,7 @@ class MultipleField(Field):
     """
 
     default = []
+    empty = []
 
     def validate(self):
         if not isinstance(self.value, list):
