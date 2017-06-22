@@ -374,6 +374,9 @@ class Field:
                 def validate(self):
                     super().validate()
 
+                    if self.value == self.empty:
+                        return
+
                     # Deal with fake users.
                     if self.value == 'John Smith':
                         raise ValidationError(_('Nice try, "John".'))
@@ -523,6 +526,9 @@ class StringField(Field):
     def validate(self):
         super().validate()
 
+        if self.value == self.empty:
+            return
+
         if not isinstance(self.value, str):
             raise ValidationError(_('Expected a string.'))
 
@@ -569,9 +575,12 @@ class NumericField(Field):
     def validate(self):
         super().validate()
 
+        if self.value == self.empty:
+            return
+
         try:
             self.value = Decimal(self.value)
-        except ValueError:
+        except:
             raise ValidationError(_('Expected a numeric value.'))
 
         if self.min is not None:
@@ -594,6 +603,9 @@ class IntegerField(NumericField):
 
     def validate(self):
         super().validate()
+
+        if self.value == self.empty:
+            return
 
         try:
             self.value = int(self.value)
@@ -677,6 +689,9 @@ class FormField(Field):
                                     field_options=self.field_options,
                                     button_options=self.button_options)
 
+        if not self.label:
+            self.label = self.subform.label
+
         super().__init__(*args, **options)
 
     def load(self, value):
@@ -689,6 +704,8 @@ class FormField(Field):
 
 class FileField(Field):
     macro = 'render_file_field'
+
+    empty = None
 
     accept = []
     """
@@ -712,6 +729,9 @@ class FileField(Field):
 
     def validate(self):
         super().validate()
+
+        if self.value == self.empty:
+            return
 
         self.file = self.value
         self.value = self.file.filename
