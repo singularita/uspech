@@ -17,6 +17,14 @@
 	padding-top: 20px;
 }
 
+.buffer-left-sm {
+	padding-left: 10px;
+}
+
+.buffer-left-md {
+	padding-left: 20px;
+}
+
 .table-view-pf-pagination {
 	margin-top: -20px;
 }

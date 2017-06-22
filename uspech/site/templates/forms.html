@@ -49,8 +49,12 @@
 {%- macro render_sub_form(field) %}
 {% if field.label %}
 <h3>{{field.label}}</h3>
-{% endif %}
+<div class="buffer-top-sm buffer-left-sm">
+ {{render_form_body(field.subform, **kwargs)}}
+</div>
+{% else %}
 {{render_form_body(field.subform, **kwargs)}}
+{% endif %}
 {% endmacro -%}
 
 
