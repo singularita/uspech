@@ -40,6 +40,7 @@ Usage:
 """
 
 
+from time import strftime
 from datetime import datetime
 from pprint import pformat
 
@@ -107,6 +108,29 @@ def second_level_menu():
             return item.children
 
     return []
+
+
+@base.app_template_global('this_year')
+def this_year():
+    return int(strftime('%Y'))
+
+
+@base.app_template_global('this_month')
+def this_month():
+    return int(strftime('%m'))
+
+
+@base.app_template_global('this_day')
+def this_day():
+    return int(strftime('%d'))
+
+
+@base.app_template_global('percent')
+def percent(minimum, current, maximum):
+    minimum = max(0, minimum)
+    current = max(0, min(max(current, minimum), maximum))
+    maximum = max(0, maximum)
+    return round((current - minimum) / (maximum - minimum) * 100)
 
 
 @base.app_template_filter('to_alert')
