@@ -48,4 +48,11 @@ class InvalidUsage(Exception):
         }
 
 
+class RemoteError(InvalidUsage):
+    """
+    An operation that attempted to use a different service as instructed by
+    the user has failed. User needs to be informed.
+    """
+
+
 # vim:set sw=4 ts=4 et:
