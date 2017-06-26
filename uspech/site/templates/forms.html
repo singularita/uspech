@@ -7,7 +7,7 @@
 
 {% for field in form.fields.values() %}
 <div class="form-group {{'has-error' if field.errors}}">
- {{field.render()}}
+ {{field.render(**kwargs)}}
  {% for error in field.errors %}
  <p class="help-block">{{error}}</p>
  {% endfor %}
