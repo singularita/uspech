@@ -313,6 +313,9 @@ class Form(metaclass=FormMeta):
         except ValidationError as error:
             self.errors.append(str(error))
 
+    def validate(self):
+        pass
+
     def is_valid(self):
         """
         Test whether is the form completely error-free.
