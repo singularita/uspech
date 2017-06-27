@@ -43,6 +43,7 @@ Usage:
 from time import strftime
 from datetime import datetime
 from pprint import pformat
+from json import dumps
 
 from flask import Blueprint, request, render_template, jsonify
 from flask import current_app
@@ -89,6 +90,11 @@ def format_date(value):
 def render_markdown(value):
     if value is not None:
         return Markup(markdown(clean(value), output_format='html5'))
+
+
+@base.app_template_filter('jsonify')
+def jsonify_filter(value):
+    return dumps(value)
 
 
 @base.app_template_filter('naturalsize')

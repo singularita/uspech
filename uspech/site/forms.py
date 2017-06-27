@@ -74,6 +74,9 @@ __all__ = [
     'IntegerField',
     'MultipleField',
     'SelectField',
+    'DataSelectField',
+    'StringDataSelectField',
+    'IntegerDataSelectField',
     'SelectMultipleField',
     'FormField',
     'FileField',
@@ -301,6 +304,14 @@ class Form(metaclass=FormMeta):
 
             if name in self.buttons:
                 self.buttons[name].load(None)
+
+        try:
+            if not self.options.get('disabled'):
+                if self.is_valid():
+                    self.validate()
+
+        except ValidationError as error:
+            self.errors.append(str(error))
 
     def is_valid(self):
         """
@@ -624,6 +635,61 @@ class SelectField(Field):
     """
     Ordered mapping of choice names to their respective labels.
     """
+
+
+class DataSelectField(Field):
+    """
+    Field that allows user to select one of many choices,
+    that are searchable using a JSON endpoint.
+
+    Subclasses should provide separate validation of the reference since
+    it cannot be performed automatically and clients may send us invalid
+    input by ignoring the client-side validation code.
+    """
+
+    source_url = ''
+    """
+    URL that provides the selection data. Must return a JSON document that
+    looks like this:
+
+    .. code-block:: json
+
+        [
+            {"name": "Foo", "value": 1},
+            {"name": "Bar", "value": 2}
+        ]
+    """
+
+    search_property = 'name'
+    """
+    Property of the returned objects the search works on.
+    """
+
+    value_property = 'value'
+    """
+    Property of the returned objects to use as submitted value.
+    """
+
+    visible_properties = ['name']
+    """
+    Properties of the returned objects to be presented to the user.
+    """
+
+
+class StringDataSelectField(StringField, DataSelectField):
+    """
+    Field for selection of string value from a dynamic collection.
+    """
+
+    macro = 'render_select_data_field'
+
+
+class IntegerDataSelectField(IntegerField, DataSelectField):
+    """
+    Field for selection of integer value from a dynamic collection.
+    """
+
+    macro = 'render_select_data_field'
 
 
 class MultipleField(Field):
