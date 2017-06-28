@@ -53,7 +53,7 @@ class Page:
     All page and item offsets are base 1 for user convenience.
     """
 
-    size = 50
+    size = 20
     """Current page size."""
 
     items = []
@@ -84,7 +84,7 @@ class Page:
     """Previous page number (or current if on the last page)."""
 
 
-    def __init__(self, query, size=50):
+    def __init__(self, query, size=20):
         assert size > 0, 'Page size must be positive'
 
         self.size = size
