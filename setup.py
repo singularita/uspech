@@ -30,9 +30,6 @@ setup(**{
     'url': 'http://github.com/singularita/uspech/',
     'include_package_data': True,
     'zip_safe': False,
-    'package_data': {
-        '': ['*.png', '*.js', '*.html'],
-    },
     'packages': find_packages(),
     'classifiers': [
         'Development Status :: 2 - Pre-Alpha',
