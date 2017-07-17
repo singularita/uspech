@@ -57,6 +57,7 @@ import re
 
 from decimal import Decimal
 from collections import Mapping, OrderedDict
+from datetime import datetime, date
 
 from werkzeug.datastructures import MultiDict
 
@@ -72,6 +73,7 @@ __all__ = [
     'TextField',
     'NumericField',
     'IntegerField',
+    'DateField',
     'MultipleField',
     'SelectField',
     'DataSelectField',
@@ -625,6 +627,28 @@ class IntegerField(NumericField):
             self.value = int(self.value)
         except ValueError:
             raise ValidationError(_('Expected an integral value.'))
+
+
+class DateField(Field):
+    """
+    Field that contains a single date value.
+    """
+
+    macro = 'render_date_field'
+
+    def validate(self):
+        super().validate()
+
+        if self.value == self.empty:
+            return
+
+        if isinstance(self.value, date):
+            return
+
+        try:
+            self.value = datetime.strptime(self.value, '%Y-%m-%d').date()
+        except ValueError:
+            raise ValidationError(_('Expected a valid date value.'))
 
 
 class SelectField(Field):

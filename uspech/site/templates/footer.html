@@ -4,6 +4,17 @@
 {% include "more-js-after-jquery.html" %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.25.0/js/patternfly.min.js" integrity="sha256-V+wCHUX+wJK0Z39hQB7X3znuPiNIkfbDd3yIU8zHbn0=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.min.js" integrity="sha256-urCxMaTtyuE8UK5XeVYuQbm/MhnXflqZ/B9AOkyTguo=" crossorigin="anonymous"></script>
+
+{% block datepicker_setup %}
+<script>
+ $('input.date-picker').datepicker({
+  format: "yyyy-mm-dd",
+  todayBtn: "linked",
+  language: {{get_locale()|tojson}}
+ });
+</script>
+{% endblock %}
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-confirmation/1.0.5/bootstrap-confirmation.min.js" integrity="sha256-0lDCetJx/wJYWmLR1yr17IiofI6mcH+ohE5nLOYP7ZY=" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/nod/2.0.12/nod.min.js" integrity="sha256-T4BKn5Y/Qq7KoFReFY5l8xix2ofHvRW4dIR85T2AN+Q=" crossorigin="anonymous"></script>
