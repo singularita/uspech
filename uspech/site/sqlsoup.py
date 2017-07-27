@@ -8,6 +8,8 @@ SQLSoup Integration
 
 
 from sqlsoup import SQLSoup
+from sqlalchemy import Table, Column
+
 from uspech.log import make_logger
 
 
@@ -17,7 +19,7 @@ __all__ = ['setup_sqlsoup']
 log = make_logger(__name__)
 
 
-def setup_sqlsoup(app):
+def setup_sqlsoup(app, view_keys={}):
     """
     Register SQLSoup with a Flask application.
 
@@ -43,6 +45,11 @@ def setup_sqlsoup(app):
             except Exception as subexn:
                 # Teardown callbacks may not raise exceptions.
                 log.exception(subexn)
+
+    for name, keys in view_keys.items():
+        columns = [Column(key, primary_key=True) for key in keys]
+        table = Table(name, app.sqlsoup._metadata, *columns, autoload=True)
+        app.sqlsoup.map_to(name, selectable=table)
 
     return app.sqlsoup
 
