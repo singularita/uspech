@@ -101,7 +101,7 @@
 {%- macro render_date_field(field, class_='', disabled=false) %}
 {%- if kwargs %}{% endif -%}
 <label class="{{class_}} form-control-label" for="{{field.id}}">{{field.label}}</label>
-<input class="{{class_}} form-control date-picker" {% if disabled %}disabled{% endif %} type="date" name="{{field.id}}" id="{{field.id}}" value="{{field.value}}"/>
+<input class="{{class_}} form-control date-picker" {% if disabled %}disabled{% endif %} type="text" name="{{field.id}}" id="{{field.id}}" value="{{field.value}}"/>
 {% endmacro -%}
 
 
