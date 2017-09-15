@@ -6,7 +6,7 @@ from sphinx.setup_command import BuildDoc
 
 
 name = 'uspech'
-version = '0.2.0'
+version = '0.3.0'
 
 
 def read_requires(path=None):

@@ -10,5 +10,5 @@ Modules
    log
    exceptions
    rbac
+   sqlsoup
    zeromq
-   site

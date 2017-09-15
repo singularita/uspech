@@ -30,6 +30,10 @@ def setup_sqlsoup(app, view_keys={}):
 
     ``SQLSOUP_ROLLBACK_ON_TEARDOWN = True``
         Flag that controls automatic rollback after every request.
+
+    :param app: The Flask application to augment.
+    :param view_keys: Mapping of database view names to lists of primary keys
+        needed for SQLSoup to be able to access these views as normal tables.
     """
 
     app.config.setdefault('SQLSOUP_DATABASE_URI', 'sqlite:///:memory:')

@@ -14,10 +14,6 @@ class InvalidUsage(Exception):
     The operation was refused and this eception needs to be propagated
     back to the user to inform his about the situation. The exception
     should not get swallowed along the way.
-
-    Exception message may (or rather should) contain parts that have been
-    translated to the user's preferred language. Rely only on the additional
-    data and the HTTP-compatible error code.
     """
 
     data = {}
