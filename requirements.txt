@@ -5,4 +5,5 @@ Flask-Menu
 humanize
 Markdown
 pyzmq
+Sphinx
 SQLSoup

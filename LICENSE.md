@@ -12,7 +12,7 @@ and that the project repository **may include third party works** that are
 
 ## The MIT License
 
-Copyright 2017 respective project contributors
+Copyright 2017-2018 respective project contributors
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

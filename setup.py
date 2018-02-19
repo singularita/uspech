@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from setuptools import setup, find_packages
-from sphinx.setup_command import BuildDoc
 
 
 name = 'uspech'
-version = '0.3.0'
+version = '0.3.2'
 
 
 def read_requires(path=None):
@@ -18,6 +17,16 @@ def read_requires(path=None):
 
     with open(path) as fp:
         return [l.strip() for l in fp.readlines()]
+
+
+cmdclass = {}
+
+try:
+    from sphinx.setup_command import BuildDoc
+    cmdclass['build_sphinx'] = BuildDoc
+
+except ImportError:
+    print('WARNING: Sphinx not available, build_sphinx disabled.')
 
 
 setup(**{
@@ -38,9 +47,7 @@ setup(**{
         'Intended Audience :: Developers',
     ],
     'install_requires': read_requires(),
-    'cmdclass': {
-        'build_sphinx': BuildDoc,
-    },
+    'cmdclass': cmdclass,
     'command_options': {
         'build_sphinx': {
             'project': ('setup.py', name),

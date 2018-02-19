@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# uspech documentation build configuration file, created by
-# sphinx-quickstart on Tue Apr 18 09:51:19 2017.
-#
 # This file is execfile()d with the current directory set to its
 # containing dir.
 #
@@ -59,7 +56,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'uspech'
-copyright = '2017, Singularita'
+copyright = '2018, Singularita'
 author = 'Singularita'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -67,7 +64,7 @@ author = 'Singularita'
 # built documents.
 #
 # The short X.Y version.
-version = None
+version = '0.3.2'
 # The full version, including alpha/beta/rc tags.
 release = None
 
